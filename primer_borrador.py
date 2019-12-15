@@ -355,6 +355,11 @@ rotLy = 0.0       # Translate screen by using
 rotLz = 0.0       # Translate screen by using
 #  # the glulookAt function (zoom in or out)
          # Display x,y,z lines (coordinate lines)
+    
+rotCx=15.0
+rotCz=0.0
+rad=0.017
+
 
 
 
@@ -397,7 +402,7 @@ def display():
     glViewport(0,height*2,widthA,height*2)
     glScissor(0,height*2,widthA,height*2)
     setWindow(widthA,height*2)
-    gluLookAt(1.0 , 0.0 , 15.0 , 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)   # Look at the new window at this position
+    gluLookAt(rotCx , 0.0 , rotCz , 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)   # Look at the new window at this position
     drawCubeB()
 
     # First window (Front view)
@@ -516,7 +521,7 @@ def drawCube():
     
     for dic in vtx:
         glColor3f(1,1,1)
-        #glLineWidth(1)
+        glLineWidth(1)
         glBegin(GL_LINE_STRIP)
         for key in dic: 
             arr = dic[key]
@@ -605,9 +610,9 @@ def drawCubeB():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glPushMatrix()  	# It is important to push the Matrix
     # before calling glRotatef and glTranslatef
-    glRotatef(rotXi, 1.0, 0.0, 0.0)             # Rotate on x
+    #glRotatef(rotXi, 1.0, 0.0, 0.0)             # Rotate on x
    # glRotatef(rotYi, 0.0, 1.0, 0.0)             # Rotate on y
-    glRotatef(rotZi, 0.0, 0.0, 1.0)             # Rotate on z
+    #glRotatef(rotZi, 0.0, 0.0, 1.0)             # Rotate on z
 
 
 
@@ -623,7 +628,7 @@ def drawCubeB():
     
     for dic in vtx:
         glColor3f(1,1,1)
-        #glLineWidth(1)
+        glLineWidth(1)
         glBegin(GL_LINE_STRIP)
         for key in dic: 
             arr = dic[key]
@@ -683,14 +688,15 @@ def drawCubeB():
     glPopMatrix()
     
     drawBackground()
+    rotatecamera()
     glutPostRedisplay()    # Redraw the scene
 
 def drawBackground():
     global Xi,Yi,Zi,rotXi,rotYi,rotZi,rotLxi,rotLyi,rotLzi,lines
 
-    glMatrixMode(GL_PROJECTION)
-    glPushMatrix()
-    glRotatef(rotYi, 0.0, 1.0, 0.0)
+    #glMatrixMode(GL_PROJECTION)
+    #glPushMatrix()
+    #glRotatef(rotYi, 0.0, 1.0, 0.0)
 
     glBegin(GL_POLYGON)            # Rotate on y
     glColor3f(0.0, 0.0, 1.0)              # Set color to blue
@@ -763,9 +769,12 @@ def drawBackground():
     glVertex3f(-3.0*100, -3.0*100, 3.0*100)
     glEnd()
     glColor3f(1.0, 0.5, 0.5)
-    glPopMatrix()
+    #glPopMatrix()
     glutPostRedisplay()
 
+def rotatecamera():
+    wiri=1
+    
 def reshape(w,h):
     global X,Y,Z,rotX,rotY,rotZ,rotLx,rotLy,rotLz,lines,rotation,old_x,old_y, mousePressed
     w = glutGet(GLUT_WINDOW_WIDTH)   # Get the windows width
@@ -905,8 +914,10 @@ def specialKey(key,x,y):
     glutPostRedisplay()
 
 def timer(a):
-    global Xi,Yi,Zi,rotXi,rotYi,rotZi,rotLxi,rotLyi,rotLzi,lines
+    global Xi,Yi,Zi,rotXi,rotYi,rotZi,rotLxi,rotLyi,rotLzi,lines,rotCx,rotCz
     glutPostRedisplay()
+    rotCx=math.cos(rad)*(rotCx)-math.sin(rad)*(rotCz)
+    rotCz=math.cos(rad)*(rotCz)+math.sin(rad)*(rotCx)
     rotYi +=0.5
     glutTimerFunc(16,timer,0)
 
@@ -923,4 +934,3 @@ glutKeyboardFunc(keyboard)
 glutSpecialFunc(specialKey)  # // to specialKey callback# // Register callback handler for window re-size event
 initGL()                      # // Our own OpenGL initialization
 glutMainLoop() 
-
