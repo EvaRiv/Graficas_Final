@@ -362,6 +362,14 @@ rad=0.017
 colorShift= 0.5
 coloraux=0
 
+#de movimiento
+posX=0
+posZ=-20
+laX=0
+laZ=0
+inc=3
+vuelta=round(0.017*10,2)
+
 def initGL():
     glShadeModel(GL_SMOOTH)       # Set the shading model to smooth
     glClearColor(0, 0, 0, 1.0)  # Clear the Color
@@ -438,7 +446,7 @@ def display():
     glViewport(0, 0, widthA, height*2)
     glScissor(0, 0, widthA, height*2)
     setWindow(widthA, height*2)
-    gluLookAt(0.0, 0.0 , -20.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
+    gluLookAt(posX, 0.0 , posZ, laX, 0.0, laZ, 0.0, 1.0, 0.0)
     drawCubeB()
 
     glDisable(GL_SCISSOR_TEST)
@@ -451,16 +459,6 @@ def drawCubeB():#arriba
     glMatrixMode(GL_PROJECTION)
     global Xi,Yi,Zi,rotXi,rotYi,rotZi,rotLxi,rotLyi,rotLzi,lines
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-    glPushMatrix()  	# It is important to push the Matrix
-    # before calling glRotatef and glTranslatef
-    #glRotatef(rotXi, 1.0, 0.0, 0.0)             # Rotate on x
-   # glRotatef(rotYi, 0.0, 1.0, 0.0)             # Rotate on y
-    #glRotatef(rotZi, 0.0, 0.0, 1.0)             # Rotate on z
-
-
-
-    glTranslatef(Xi, Yi, Zi)         # Translates the screen left or right,
-
 
 
     glPushMatrix ( )
@@ -536,18 +534,12 @@ def drawCubeB():#arriba
     glPopMatrix()
     
     glDisable(GL_BLEND)
-
-    glPopMatrix()
     
     
     glutPostRedisplay()    # Redraw the scene
 
 def drawBackground():
     global Xi,Yi,Zi,rotXi,rotYi,rotZi,rotLxi,rotLyi,rotLzi,lines
-
-    #glMatrixMode(GL_PROJECTION)
-    #glPushMatrix()
-    #glRotatef(rotYi, 0.0, 1.0, 0.0)
 
     glBegin(GL_POLYGON)            # Rotate on y
     glColor3f(0.0, 0.0, 1.0)              # Set color to blue
@@ -641,126 +633,69 @@ def reshape(w,h):
 
 
 def keyboard(bkey, x, y):
-    global X,Y,Z,rotX,rotY,rotZ,rotLx,rotLy,rotLz,lines,rotation,old_x,old_y, mousePressed
+    global X,Y,Z,rotX,rotY,rotZ,rotLx,rotLy,rotLz,lines,rotation,old_x,old_y, mousePressed, posX,posZ,laX,laZ
     key = bkey.decode("utf-8")
-    if key == 'x':    # x           # Rotates screen on x axis
+    if key == 'd':    # x           # Rotates screen on x axis
         rotX -= 2.0
 
-    if key == 'X':    # X            	# Opposite way
-        rotX += 2.0
-
-    if key == 'y':    # y            	# Rotates screen on y axis
-        rotY -= 2.0
-
-    if key == 'Y':    # Y           	# Opposite way
-        rotY += 2.0
-
-    if key == 'z':    # z            	# Rotates screen on z axis
-        rotZ -= 2.0
-
-    if key == 'Z':    # Z            	# Opposite way
-        rotZ += 2.0
-
     # j,J,k,K,l,L uses the gluLookAt function for navigation
-    if key == 'j':   # j
+    if key == 'e':   # j
         rotLx -= 2.0
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
         gluLookAt(rotLx, rotLy, 15.0 + rotLz, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
 
-    if key == 'J':    # J
-        rotLx += 2.0
-        glMatrixMode(GL_MODELVIEW)
-        glLoadIdentity()
-        gluLookAt(rotLx, rotLy, 15.0 + rotLz, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
-
-    if key == 'k':   # k
-        rotLy -= 2.0
-        glMatrixMode(GL_MODELVIEW)
-        glLoadIdentity()
-        gluLookAt(rotLx, rotLy, 15.0 + rotLz, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
-
-    if key == 'K':    # K
-        rotLy += 2.0
-        glMatrixMode(GL_MODELVIEW)
-        glLoadIdentity()
-        gluLookAt(rotLx, rotLy, 15.0 + rotLz, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
-
-    if key == 'l': 	# (l) It has a special  if key == when the rotLZ becames less
-    # than -15 the screen is viewed from the opposite side
-    # therefore this if statement below does not allow
-    # rotLz be less than -15
-        if (rotLz + 14 >= 0):
-            rotLz -= 2.0
-        glMatrixMode(GL_MODELVIEW)
-        glLoadIdentity()
-        gluLookAt(rotLx, rotLy, 15.0 + rotLz, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
-
-    if key == 'L':    # L
-        rotLz += 2.0
-        glMatrixMode(GL_MODELVIEW)
-        glLoadIdentity()
-        gluLookAt(rotLx, rotLy, 15.0 + rotLz, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
-
-    if key == 'b':    # b        # Rotates on x axis by -90 degree
-        rotX -= 90.0
-
-    if key == 'B':    # B        # Rotates on y axis by 90 degree
-        rotX += 90.0
-
-    if key == 'n':    # n       # Rotates on y axis by -90 degree
-        rotY -= 90.0
-
-    if key == 'N':    # N        # Rotates on y axis by 90 degree
-        rotY += 90.0
-
-    if key == 'm':    # m       # Rotates on z axis by -90 degree
-        rotZ -= 90.0
-
-    if key == 'M':    # M        # Rotates on z axis by 90 degree
-        rotZ += 90.0
-
-
-    if key == 'O':    # O        # Displays the cube in the starting position
-        rotation = False
-        X = Y = 0.0
-        Z = 0.0
-        rotX = 0.0
-        rotY = 0.0
-        rotZ = 0.0
-        rotLx = 0.0
-        rotLy = 0.0
-        rotLz = 0.0
-        glMatrixMode(GL_MODELVIEW)
-        glLoadIdentity()
-        gluLookAt(rotLx, rotLy, 15.0 + rotLz, 0.0, 0.0,
-        0.0, 0.0, 1.0, 0.0)
+    if key == 'o':    # O        # Displays the cube in the starting position
+        posX=0
+        posZ=-20
+        laX=0
+        laZ=0
     glutPostRedisplay()
 
 def specialKey(key,x,y):
-    global X,Y,Z,rotX,rotY,rotZ,rotLx,rotLy,rotLz,lines,rotation,old_x,old_y, mousePressed
+    global X,Y,Z,rotX,rotY,rotZ,rotLx,rotLy,rotLz,lines,rotation,old_x,old_y, mousePressed,posX,posZ,laX,laZ,inc
+    if laX-posX != 0:
+        angulo=round(math.atan((laZ-posZ)/(laX-posX)),3)
+    elif laZ>posZ:
+        angulo=1.57
+    else:
+        angulo=4.71
+        
     if key==GLUT_KEY_LEFT:
-        X-=2.0
+        normal=-1.57
+        posX=posX+round(math.cos(angulo+normal)*inc)
+        laX=laX+round(math.cos(angulo+normal)*inc)
+        posZ=posZ+round(math.sin(angulo+normal)*inc)
+        laZ=laZ+round(math.sin(angulo+normal)*inc)
+
     if key==GLUT_KEY_RIGHT:
-        X+=2.0
+        normal=1.57
+        posX=posX+round(math.cos(angulo+normal)*inc)
+        laX=laX+round(math.cos(angulo+normal)*inc)
+        posZ=posZ+round(math.sin(angulo+normal)*inc)
+        laZ=laZ+round(math.sin(angulo+normal)*inc)
 
     if key == GLUT_KEY_UP:
-        Y+=2.0
+        normal=0
+        posX=posX+round(math.cos(angulo+normal)*inc)
+        laX=laX+round(math.cos(angulo+normal)*inc)
+        posZ=posZ+round(math.sin(angulo+normal)*inc)
+        laZ=laZ+round(math.sin(angulo+normal)*inc)       
 
     if key==GLUT_KEY_DOWN:
-        Y-=2.0
+        normal=3.14
+        posX=posX+round(math.cos(angulo+normal)*inc)
+        laX=laX+round(math.cos(angulo+normal)*inc)
+        posZ=posZ+round(math.sin(angulo+normal)*inc)
+        laZ=laZ+round(math.sin(angulo+normal)*inc)
 
     if key==GLUT_KEY_PAGE_UP:
-        Z-=2.0
+        laX=posX+math.cos(-vuelta)*(laX-posX)-math.sin(-vuelta)*(laZ-posZ)
+        laZ=posZ+math.cos(-vuelta)*(laZ-posZ)+math.sin(-vuelta)*(laX-posX)
 
     if key == GLUT_KEY_PAGE_DOWN:
-        Z+=2.0
-
-    if key == GLUT_KEY_F1:
-        lines = not lines
-
-    if key == GLUT_KEY_F2:
-        rotation = not rotation
+        laX=posX+math.cos(vuelta)*(laX-posX)-math.sin(vuelta)*(laZ-posZ)
+        laZ=posZ+math.cos(vuelta)*(laZ-posZ)+math.sin(vuelta)*(laX-posX)
 
     glutPostRedisplay()
 
