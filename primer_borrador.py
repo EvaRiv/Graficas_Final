@@ -356,16 +356,10 @@ rotLz = 0.0       # Translate screen by using
 #  # the glulookAt function (zoom in or out)
          # Display x,y,z lines (coordinate lines)
     
-rotCx=15.0
-rotCz=0.0
+rotCx=.0
+rotCz=15.0
 rad=0.017
-
-
-
-
-
-
-
+colorShift= 0.5
 
 def initGL():
     glShadeModel(GL_SMOOTH)       # Set the shading model to smooth
@@ -396,6 +390,40 @@ def display():
     height = int((heightA+1)/4)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)  ## Clear Colo# and Depth Buffer
     widthA = int(widthA)
+    
+    glEnable(GL_BLEND)
+    #glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+    
+    #luz
+    blueColor=[0.0,1.0,0.95,0.7]
+    pos1=[0.0,5.0,15.0,0.9]
+    glLightfv(GL_LIGHT1,GL_SPECULAR,blueColor)
+    glLightfv(GL_LIGHT1,GL_POSITION,pos1)
+    glEnable(GL_LIGHT1)
+    
+    whiteColor=[1.0,1.0,1.0,1.0]
+    glLightfv(GL_LIGHT2,GL_SPECULAR,whiteColor)
+    glEnable(GL_LIGHT2)
+    
+    glLightfv(GL_LIGHT3,GL_AMBIENT,whiteColor)
+    glEnable(GL_LIGHT3)
+    
+    glEnable (GL_LIGHTING)
+    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1)
+    
+    ambient = [0.1, 0.1, 0.1, 0.15]
+    diffuse = [ 0.5, 0.95, 0.8, 0.2 ]
+    specular = [ 1.0, 1.0, 1.0, 1.0 ]
+    emission = [ 0.0, 0.0, 0.0, 0.3 ]
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient)
+    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse)
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular)
+    glMateriali(GL_FRONT_AND_BACK, GL_SHININESS, 32)
+    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emission)
+    glColorMaterial(GL_FRONT_AND_BACK, GL_EMISSION)
+    glEnable(GL_COLOR_MATERIAL)
+    
+    
 
     glEnable(GL_SCISSOR_TEST)      # Enable Scissor Test for multiple view
 
@@ -482,121 +510,90 @@ def drawCube():
     glTranslatef(X, Y, Z)         # Translates the screen left or right,
         # up or down or zoom in zoom out
 
-#     if lines:  # If F1 is pressed don't draw the lines
-#     # Draw the positive side of the lines x,y,z
-#         glBegin(GL_LINES)
-#         glColor3f(0.0, 1.0, 0.0)                 # Green for x axis
-#         glVertex3f(0, 0, 0)
-#         glVertex3f(10, 0, 0)
-#         glColor3f(1.0, 0.0, 0.0)                 # Red for y axis
-#         glVertex3f(0, 0, 0)
-#         glVertex3f(0, 10, 0)
-#         glColor3f(0.0, 0.0, 1.0)                 # Blue for z axis
-#         glVertex3f(0, 0, 0)
-#         glVertex3f(0, 0, 10)
-#         glEnd()
-
-#         # Dotted lines for the negative sides of x,y,z coordinates
-#         glEnable(GL_LINE_STIPPLE) # Enable line stipple to use
-#                 # a dotted pattern for the lines
-#         glLineStipple(1, 0x0101)      # Dotted stipple pattern for the lines
-#         glBegin(GL_LINES)
-#         glColor3f(0.0, 1.0, 0.0)                     # Green for x axis
-#         glVertex3f(-10, 0, 0)
-#         glVertex3f(0, 0, 0)
-#         glColor3f(1.0, 0.0, 0.0)                     # Red for y axis
-#         glVertex3f(0, 0, 0)
-#         glVertex3f(0, -10, 0)
-#         glColor3f(0.0, 0.0, 1.0)                     # Blue for z axis
-#         glVertex3f(0, 0, 0)
-#         glVertex3f(0, 0, -10)
-#         glEnd()
-#         glDisable(GL_LINE_STIPPLE)              # Disable the line stipple
-
     glPushMatrix ( )
-    glTranslatef (0.0, -7.0, 0.0)
+    glTranslatef (0.0, -6.0, 0.0)
     glColor3f(0.99,0.01,0.42)
     glutSolidSphere(3,10,10)
     glPopMatrix ( )
     
-    for dic in vtx:
-        glColor3f(1,1,1)
-        glLineWidth(1)
-        glBegin(GL_LINE_STRIP)
-        for key in dic: 
-            arr = dic[key]
-            glVertex3f(arr[0],arr[1],arr[2])
-        glEnd()
+#     for dic in vtx:
+#         glColor3f(1,1,1)
+#         glLineWidth(1)
+#         glBegin(GL_LINE_STRIP)
+#         for key in dic: 
+#             arr = dic[key]
+#             glVertex3f(arr[0],arr[1],arr[2])
+#         glEnd()
     
 #     glBegin(GL_POLYGON)
 #     glColor3f(0.0, 0.0, 1.0)              # Set color to blue
-#     glVertex3f(3.0, 3.0, 3.0)
+#     glVertex3f(5.0, 5.0, 5.0)
 #     glColor3f(1.0, 0.0, 0.0)              # Set color to red
-#     glVertex3f(3.0, -3.0, 3.0)
+#     glVertex3f(5.0, -6.0, 5.0)
 #     glColor3f(0.0,0.0, 1.0)
-#     glVertex3f(-3.0, -3.0, 3.0)
+#     glVertex3f(-6.0, -6.0, 5.0)
 #     glColor3f(1.0, 0.0, 0.0)
-#     glVertex3f(-3.0, 3.0, 3.0)
+#     glVertex3f(-6.0, 5.0, 5.0)
 #     glEnd()
 
 #     # Back side
 #     glBegin(GL_POLYGON)
 #     glColor3f(0.5, 0.0, .0)
-#     glVertex3f(3.0, 3.0, -3.0)
+#     glVertex3f(5.0, 5.0, -6.0)
 #     glColor3f(0.0, 0.0, 1.0)
-#     glVertex3f(3.0, -3.0, -3.0)
+#     glVertex3f(5.0, -6.0, -6.0)
 #     glColor3f(0.5, 0.0, 0.0)
-#     glVertex3f(-3.0, -3.0, -3.0)
+#     glVertex3f(-6.0, -6.0, -6.0)
 #     glColor3f(0.0, 0.0, 1.0)
-#     glVertex3f(-3.0, 3.0, -3.0)
+#     glVertex3f(-6.0, 5.0, -6.0)
 #     glEnd()
 
 #     # Right side
 #     glBegin(GL_POLYGON)
 #     glColor3f(0.0, 1.0, 0.0)
-#     glVertex3f(3.0, 3.0, 3.0)
+#     glVertex3f(5.0, 5.0, 5.0)
 #     glColor3f(0.0, 0.0, 1.0)
-#     glVertex3f(3.0, 3.0, -3.0)
+#     glVertex3f(5.0, 5.0, -6.0)
 #     glColor3f(0.0, 1.0, 0.0)
-#     glVertex3f(3.0, -3.0, -3.0)
+#     glVertex3f(5.0, -6.0, -6.0)
 #     glColor3f(0.0, 0.0, 1.0)
-#     glVertex3f(3.0, -3.0, 3.0)
+#     glVertex3f(5.0, -6.0, 5.0)
 #     glEnd()
 
 #     # Left Side
 #     glBegin(GL_POLYGON)
 #     glColor3f(0.0, 0.0, 1.0)
-#     glVertex3f(-3.0, 3.0, 3.0)
+#     glVertex3f(-6.0, 5.0, 5.0)
 #     glColor3f(0.0, 1.0, 0.0)
-#     glVertex3f(-3.0, -3.0, 3.0)
+#     glVertex3f(-6.0, -6.0, 5.0)
 #     glColor3f(0.0, 0.0, 1.0)
-#     glVertex3f(-3.0, -3.0, -3.0)
+#     glVertex3f(-6.0, -6.0, -6.0)
 #     glColor3f(0.0, 1.0, 0.0)
-#     glVertex3f(-3.0, 3.0, -3.0)
+#     glVertex3f(-6.0, 5.0, -6.0)
 #     glEnd()
 
 #     # Upside
 #     glBegin(GL_POLYGON)
 #     glColor3f(0.0, 0.0, 1.0)
-#     glVertex3f(3.0, 3.0, 3.0)
+#     glVertex3f(5.0, 5.0, 5.0)
 #     glColor3f(1.0, 1.0, 0.0)
-#     glVertex3f(3.0, 3.0, -3.0)
+#     glVertex3f(5.0, 5.0, -6.0)
 #     glColor3f(0.0, 0.0, 1.0)
-#     glVertex3f(-3.0, 3.0, -3.0)
+#     glVertex3f(-6.0, 5.0, -6.0)
 #     glColor3f(1.0, 1.0, 0.0)
-#     glVertex3f(-3.0, 3.0, 3.0)
+#     glVertex3f(-6.0, 5.0, 5.0)
 #     glEnd()
 
 #     # Bottom
 #     glBegin(GL_POLYGON)
 #     glColor3f(1.0, 1.0, 0.0)
-#     glVertex3f(3.0, -3.0, 3.0)
+#     glVertex3f(5.0, -6.0, 5.0)
 #     glColor3f(0.0, 0.0, 1.0)
-#     glVertex3f(3.0, -3.0, -3.0)
+#     glVertex3f(5.0, -6.0, -6.0)
 #     glColor3f(1.0, 1.0, 0.0)
-#     glVertex3f(-3.0, -3.0, -3.0)
+#     glVertex3f(-6.0, -6.0, -6.0)
 #     glColor3f(0.0, 0.0, 1.0)
-#     glVertex3f(-3.0, -3.0, 3.0)
+#     glVertex3f(-6.0, -6.0, 5.0)
 #     glEnd()
 
 
@@ -604,7 +601,7 @@ def drawCube():
     glPopMatrix()
     glutPostRedisplay()    # Redraw the scene
 
-def drawCubeB():
+def drawCubeB():#arriba
     glMatrixMode(GL_PROJECTION)
     global Xi,Yi,Zi,rotXi,rotYi,rotZi,rotLxi,rotLyi,rotLzi,lines
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -621,69 +618,72 @@ def drawCubeB():
 
 
     glPushMatrix ( )
-    glTranslatef (0.0, -7.0, 0.0)
+    glTranslatef (0.0, -8.0, 0.0)
     glColor3f(0.99,0.01,0.42)
-    glutSolidSphere(3,10,10)
+    glutSolidSphere(3,20,20)
     glPopMatrix ( )
     
     for dic in vtx:
         glColor3f(1,1,1)
-        glLineWidth(1)
+        glLineWidth(2)
         glBegin(GL_LINE_STRIP)
         for key in dic: 
             arr = dic[key]
             glVertex3f(arr[0],arr[1],arr[2])
         glEnd()
     
-#     glColor3f(0.01,0.99,0.83)
+    glColor4f(colorShift,1.0,0.5,0.0)
     
-#     glBegin(GL_POLYGON)
-#     glVertex3f(3.0, 9.0, 3.0)
-#     glVertex3f(3.0, 3.0, 3.0)
-#     glVertex3f(-3.0, 3.0, 3.0)
-#     glVertex3f(-3.0, 9.0, 3.0)
-#     glEnd()
+    glPushMatrix()
+    glTranslatef(0.0,1.0,0.0)
+    glBegin(GL_POLYGON)
+    glVertex3f(6.0, 6.0, 6.0)
+    glVertex3f(6.0, -6.0, 6.0)
+    glVertex3f(-6.0, -6.0, 6.0)
+    glVertex3f(-6.0, 6.0, 6.0)
+    glEnd()
 
-#     # Back side
-#     glBegin(GL_POLYGON)
-#     glVertex3f(3.0, 9.0, -3.0)
-#     glVertex3f(3.0, 3.0, -3.0)
-#     glVertex3f(-3.0, 3.0, -3.0)
-#     glVertex3f(-3.0, 9.0, -3.0)
-#     glEnd()
+    # Back side
+    glBegin(GL_POLYGON)
+    glVertex3f(6.0, 6.0, -6.0)
+    glVertex3f(6.0, -6.0, -6.0)
+    glVertex3f(-6.0, -6.0, -6.0)
+    glVertex3f(-6.0, 6.0, -6.0)
+    glEnd()
 
-#     # Right side
-#     glBegin(GL_POLYGON)
-#     glVertex3f(3.0, 9.0, 3.0)
-#     glVertex3f(3.0, 9.0, -3.0)
-#     glVertex3f(3.0, 3.0, -3.0)
-#     glVertex3f(3.0, 3.0, 3.0)
-#     glEnd()
+    # Right side
+    glBegin(GL_POLYGON)
+    glVertex3f(6.0, 6.0, 6.0)
+    glVertex3f(6.0, 6.0, -6.0)
+    glVertex3f(6.0, -6.0, -6.0)
+    glVertex3f(6.0, -6.0, 6.0)
+    glEnd()
 
-#     # Left Side
-#     glBegin(GL_POLYGON)
-#     glVertex3f(-3.0, 9.0, 3.0)
-#     glVertex3f(-3.0, 3.0, 3.0)
-#     glVertex3f(-3.0, 3.0, -3.0)
-#     glVertex3f(-3.0, 9.0, -3.0)
-#     glEnd()
+    # Left Side
+    glBegin(GL_POLYGON)
+    glVertex3f(-6.0, 6.0, 6.0)
+    glVertex3f(-6.0, -6.0, 6.0)
+    glVertex3f(-6.0, -6.0, -6.0)
+    glVertex3f(-6.0, 6.0, -6.0)
+    glEnd()
 
-#     # Upside
-#     glBegin(GL_POLYGON)
-#     glVertex3f(3.0, 9.0, 3.0)
-#     glVertex3f(3.0, 9.0, -3.0)
-#     glVertex3f(-3.0, 9.0, -3.0)
-#     glVertex3f(-3.0, 9.0, 3.0)
-#     glEnd()
+    # Upsi
+    glBegin(GL_POLYGON)
+    glVertex3f(6.0, 6.0, 6.0)
+    glVertex3f(6.0, 6.0, -6.0)
+    glVertex3f(-6.0, 6.0, -6.0)
+    glVertex3f(-6.0, 6.0, 6.0)
+    glEnd()
 
-#     # Bottom
-#     glBegin(GL_POLYGON)
-#     glVertex3f(3.0, 3.0, 3.0)
-#     glVertex3f(3.0, 3.0, -3.0)
-#     glVertex3f(-3.0, 3.0, -3.0)
-#     glVertex3f(-3.0, 3.0, 3.0)
-#     glEnd()
-
+    # Bottom
+    glBegin(GL_POLYGON)
+    glVertex3f(5.0, -6.0, 5.0)
+    glVertex3f(5.0, -6.0, -6.0)
+    glVertex3f(-6.0, -6.0, -6.0)
+    glVertex3f(-6.0, -6.0, 5.0)
+    glEnd()
+    
+    glPopMatrix()
 
     glPopMatrix()
     
@@ -720,7 +720,7 @@ def drawBackground():
     glColor3f(0.0, 0.0, 1.0)
     glVertex3f(-3.0*100, 3.0*100, -3.0*100)
     glEnd()
-
+    
     # Right side
     glBegin(GL_POLYGON)
     glColor3f(0.0, 1.0, 0.0)
@@ -745,7 +745,8 @@ def drawBackground():
     glVertex3f(-3.0*100, 3.0*100, -3.0*100)
     glEnd()
 
-    # Upside
+
+   # Upside
     glBegin(GL_POLYGON)
     glColor3f(0.0, 0.0, 1.0)
     glVertex3f(3.0*100, 3.0*100, 3.0*100)
@@ -756,7 +757,7 @@ def drawBackground():
     glColor3f(1.0, 1.0, 0.0)
     glVertex3f(-3.0*100, 3.0*100, 3.0*100)
     glEnd()
-
+    
     # Bottom
     glBegin(GL_POLYGON)
     glColor3f(1.0, 1.0, 0.0)
@@ -771,7 +772,8 @@ def drawBackground():
     glColor3f(1.0, 0.5, 0.5)
     #glPopMatrix()
     glutPostRedisplay()
-
+    
+    
 def rotatecamera():
     wiri=1
     
@@ -914,16 +916,17 @@ def specialKey(key,x,y):
     glutPostRedisplay()
 
 def timer(a):
-    global Xi,Yi,Zi,rotXi,rotYi,rotZi,rotLxi,rotLyi,rotLzi,lines,rotCx,rotCz
+    global Xi,Yi,Zi,rotXi,rotYi,rotZi,rotLxi,rotLyi,rotLzi,lines,rotCx,rotCz,rad
     glutPostRedisplay()
-    rotCx=math.cos(rad)*(rotCx)-math.sin(rad)*(rotCz)
-    rotCz=math.cos(rad)*(rotCz)+math.sin(rad)*(rotCx)
+    rotCx=math.cos(rad)*17
+    rotCz=math.sin(rad)*17
+    rad+=0.017
     rotYi +=0.5
     glutTimerFunc(16,timer,0)
 
-
 glutInit()       #// Initialize GLUT
 glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH) #// Enable double buffered mode
+
 glutInitWindowSize(600, 600)   #// Set the window's initial width & height
 glutInitWindowPosition(50, 50)# // Position the window's initial top-left corner
 glutCreateWindow("aiuda")       #   // Create window with the given title
