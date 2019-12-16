@@ -402,8 +402,8 @@ def display():
     glLightfv(GL_LIGHT1,GL_POSITION,pos1)
     glEnable(GL_LIGHT1)
     
-    whiteColor=[1.0,1.0,1.0,1.0]
-    glLightfv(GL_LIGHT2,GL_SPECULAR,whiteColor)
+    whiteColor=[1.0,1.0,1.0,0.5]
+    glLightfv(GL_LIGHT2,GL_SPECULAR,blueColor)
     glEnable(GL_LIGHT2)
     
     glLightfv(GL_LIGHT3,GL_AMBIENT,whiteColor)
@@ -433,174 +433,18 @@ def display():
     setWindow(widthA,height*2)
     gluLookAt(rotCx , 0.0 , rotCz , 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)   # Look at the new window at this position
     drawCubeB()
-
-    # First window (Front view)
-    glViewport(0, height, width, height)                   # Set the viewPort
-    glScissor(0, height, width, height)                    # Divide the window
-    setWindow(width, height)
-    gluLookAt(1.0 , 0.0 , 15.0 , 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)   # Look at the new window at this position
-    drawCube()         # Draw the cube
-    #glRasterPos3f(-15, 19, -15)     # Set the position for the string (text)
-    #text("Front")   # Display the text "Front"
-
-    # Second Window (Back View)
-    glViewport(0, 0, width, height)
-    glScissor(0, 0, width, height)
-    setWindow(width, height)
-    gluLookAt(0.0, 0.0 , -15.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
-    drawCube()
-    #glRasterPos3f(15.0 , 19.0 , 15.0)
-   # text("Back")
-
-    # Third window (Right View)
-    glViewport(width, height, width, height)
-    glScissor(width, height, width, height)
-    setWindow(width, height)
-    gluLookAt(15.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
-    drawCube()
-    #glRasterPos3f(-15.0, 19.0, 15.0)
-    #text("Right")
-
-    # Forth Window (Left View)
-    glViewport(width, 0, width, height)
-    glScissor(width, 0, width, height)
-    setWindow(width, height)
-    gluLookAt(-15.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
-    drawCube()
-    #glRasterPos3f(15.0, 19.0, -15.0)
-    #text("Left")
-
-    # Fifth window (Upside down view)
-    glViewport(2 * width, height, width, height)
-    glScissor(2 * width, height, width, height)
-    setWindow(width, height)
-    gluLookAt(0.0 , 15.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0)
-    drawCube()
-    #glRasterPos3f(-15.0, -15.0, -19.0)
-    #text("Up")
-
-    # Sixth window bottom up view
-    glViewport(2 * width, 0, width, height)
-    glScissor(2 * width, 0, width, height)
-    setWindow(width, height)
-    gluLookAt(1.0, -15.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -1.0)
-    drawCube()
-   # glRasterPos3f(15.0, 15.0, -19.0)
-   # text("Bottom")
+    
+    # Second Window (Abajo)
+    glViewport(0, 0, widthA, height*2)
+    glScissor(0, 0, widthA, height*2)
+    setWindow(widthA, height*2)
+    gluLookAt(0.0, 0.0 , -20.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
+    drawCubeB()
 
     glDisable(GL_SCISSOR_TEST)
     glutSwapBuffers()
     
-    
 
-def drawCube():
-    global X,Y,Z,rotX,rotY,rotZ,rotLx,rotLy,rotLz,lines,rotation,old_x,old_y, mousePressed
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-    glPushMatrix()  	# It is important to push the Matrix
-    # before calling glRotatef and glTranslatef
-    glRotatef(rotX, 1.0, 0.0, 0.0)             # Rotate on x
-    glRotatef(rotY, 0.0, 1.0, 0.0)             # Rotate on y
-    glRotatef(rotZ, 0.0, 0.0, 1.0)             # Rotate on z
-
-    if rotation: # If F2 is pressed update x,y,z for rotation of the cube
-        rotX += 0.2
-        rotY += 0.2
-        rotZ += 0.2
-
-
-    glTranslatef(X, Y, Z)         # Translates the screen left or right,
-        # up or down or zoom in zoom out
-
-    glPushMatrix ( )
-    glTranslatef (0.0, -6.0, 0.0)
-    glColor3f(0.99,0.01,0.42)
-    glutSolidSphere(3,10,10)
-    glPopMatrix ( )
-    
-#     for dic in vtx:
-#         glColor3f(1,1,1)
-#         glLineWidth(1)
-#         glBegin(GL_LINE_STRIP)
-#         for key in dic: 
-#             arr = dic[key]
-#             glVertex3f(arr[0],arr[1],arr[2])
-#         glEnd()
-    
-#     glBegin(GL_POLYGON)
-#     glColor3f(0.0, 0.0, 1.0)              # Set color to blue
-#     glVertex3f(5.0, 5.0, 5.0)
-#     glColor3f(1.0, 0.0, 0.0)              # Set color to red
-#     glVertex3f(5.0, -6.0, 5.0)
-#     glColor3f(0.0,0.0, 1.0)
-#     glVertex3f(-6.0, -6.0, 5.0)
-#     glColor3f(1.0, 0.0, 0.0)
-#     glVertex3f(-6.0, 5.0, 5.0)
-#     glEnd()
-
-#     # Back side
-#     glBegin(GL_POLYGON)
-#     glColor3f(0.5, 0.0, .0)
-#     glVertex3f(5.0, 5.0, -6.0)
-#     glColor3f(0.0, 0.0, 1.0)
-#     glVertex3f(5.0, -6.0, -6.0)
-#     glColor3f(0.5, 0.0, 0.0)
-#     glVertex3f(-6.0, -6.0, -6.0)
-#     glColor3f(0.0, 0.0, 1.0)
-#     glVertex3f(-6.0, 5.0, -6.0)
-#     glEnd()
-
-#     # Right side
-#     glBegin(GL_POLYGON)
-#     glColor3f(0.0, 1.0, 0.0)
-#     glVertex3f(5.0, 5.0, 5.0)
-#     glColor3f(0.0, 0.0, 1.0)
-#     glVertex3f(5.0, 5.0, -6.0)
-#     glColor3f(0.0, 1.0, 0.0)
-#     glVertex3f(5.0, -6.0, -6.0)
-#     glColor3f(0.0, 0.0, 1.0)
-#     glVertex3f(5.0, -6.0, 5.0)
-#     glEnd()
-
-#     # Left Side
-#     glBegin(GL_POLYGON)
-#     glColor3f(0.0, 0.0, 1.0)
-#     glVertex3f(-6.0, 5.0, 5.0)
-#     glColor3f(0.0, 1.0, 0.0)
-#     glVertex3f(-6.0, -6.0, 5.0)
-#     glColor3f(0.0, 0.0, 1.0)
-#     glVertex3f(-6.0, -6.0, -6.0)
-#     glColor3f(0.0, 1.0, 0.0)
-#     glVertex3f(-6.0, 5.0, -6.0)
-#     glEnd()
-
-#     # Upside
-#     glBegin(GL_POLYGON)
-#     glColor3f(0.0, 0.0, 1.0)
-#     glVertex3f(5.0, 5.0, 5.0)
-#     glColor3f(1.0, 1.0, 0.0)
-#     glVertex3f(5.0, 5.0, -6.0)
-#     glColor3f(0.0, 0.0, 1.0)
-#     glVertex3f(-6.0, 5.0, -6.0)
-#     glColor3f(1.0, 1.0, 0.0)
-#     glVertex3f(-6.0, 5.0, 5.0)
-#     glEnd()
-
-#     # Bottom
-#     glBegin(GL_POLYGON)
-#     glColor3f(1.0, 1.0, 0.0)
-#     glVertex3f(5.0, -6.0, 5.0)
-#     glColor3f(0.0, 0.0, 1.0)
-#     glVertex3f(5.0, -6.0, -6.0)
-#     glColor3f(1.0, 1.0, 0.0)
-#     glVertex3f(-6.0, -6.0, -6.0)
-#     glColor3f(0.0, 0.0, 1.0)
-#     glVertex3f(-6.0, -6.0, 5.0)
-#     glEnd()
-
-
-    glColor3f(1.0, 0.5, 0.5)
-    glPopMatrix()
-    glutPostRedisplay()    # Redraw the scene
 
     
 def drawCubeB():#arriba
@@ -638,7 +482,7 @@ def drawCubeB():#arriba
     
     glEnable(GL_BLEND)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-    glColor4f(colorShift,1.0,0.5,0.3)
+    glColor4f(0.0,0.7,colorShift,0.3)
     
     glPushMatrix()
     glTranslatef(0.0,1.0,0.0)
