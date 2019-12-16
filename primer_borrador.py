@@ -370,6 +370,9 @@ laZ=0
 inc=3
 vuelta=round(0.017*10,2)
 
+#de luz
+ba,bd,be=False,False,False
+
 def initGL():
     glShadeModel(GL_SMOOTH)       # Set the shading model to smooth
     glClearColor(0, 0, 0, 1.0)  # Clear the Color
@@ -400,28 +403,32 @@ def display():
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)  ## Clear Colo# and Depth Buffer
     widthA = int(widthA)
     
-    glEnable(GL_BLEND)
-    #glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-    
+
     #luz
-    blueColor=[0.0,1.0,0.95,0.7]
-    pos1=[0.0,5.0,15.0,0.9]
-    glLightfv(GL_LIGHT1,GL_SPECULAR,blueColor)
-    glLightfv(GL_LIGHT1,GL_POSITION,pos1)
-    glEnable(GL_LIGHT1)
+    blueColor=[0.0,1.0,0.95,1.0]
+    lpos=[0.0,0.0,10.0]
+    glLightfv(GL_LIGHT1,GL_DIFFUSE,blueColor)
+#     if bd:
+#         glEnable(GL_LIGHT1)
     
     whiteColor=[1.0,1.0,1.0,0.5]
     glLightfv(GL_LIGHT2,GL_SPECULAR,blueColor)
-    glEnable(GL_LIGHT2)
+#     if be:
+#         glEnable(GL_LIGHT2)
+    
+    glLightfv(GL_LIGHT4,GL_SPECULAR,whiteColor)
+    glLightfv(GL_LIGHT4,GL_POSITION,lpos)
+    #glEnable(GL_LIGHT4)
     
     glLightfv(GL_LIGHT3,GL_AMBIENT,whiteColor)
-    glEnable(GL_LIGHT3)
+#     if ba:
+#         glEnable(GL_LIGHT3)
     
     glEnable (GL_LIGHTING)
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 1)
     
     ambient = [0.1, 0.1, 0.1, 0.15]
-    diffuse = [ 0.5, 0.95, 0.8, 0.2 ]
+    diffuse = [ 0.5, 0.95, 0.8, 0.8 ]
     specular = [ 1.0, 1.0, 1.0, 1.0 ]
     emission = [ 0.0, 0.0, 0.0, 0.3 ]
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient)
@@ -633,19 +640,33 @@ def reshape(w,h):
 
 
 def keyboard(bkey, x, y):
-    global X,Y,Z,rotX,rotY,rotZ,rotLx,rotLy,rotLz,lines,rotation,old_x,old_y, mousePressed, posX,posZ,laX,laZ
+    global posX,posZ,laX,laZ, bd, ba, be
     key = bkey.decode("utf-8")
-    if key == 'd':    # x           # Rotates screen on x axis
-        rotX -= 2.0
+    if key == 'd':    
+        if bd:
+            glDisable(GL_LIGHT1)
+            bd =False
+        else:
+            glEnable(GL_LIGHT1)
+            bd = True
 
-    # j,J,k,K,l,L uses the gluLookAt function for navigation
-    if key == 'e':   # j
-        rotLx -= 2.0
-        glMatrixMode(GL_MODELVIEW)
-        glLoadIdentity()
-        gluLookAt(rotLx, rotLy, 15.0 + rotLz, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0)
+    elif key == 'e':     
+        if bd:
+            glDisable(GL_LIGHT2)
+            bd = False
+        else:
+            glEnable(GL_LIGHT2)
+            bd = True
+    
+    elif key == 'a':    
+        if bd:
+            glDisable(GL_LIGHT3)
+            bd = False
+        else:
+            glEnable(GL_LIGHT3)
+            bd = True
 
-    if key == 'o':    # O        # Displays the cube in the starting position
+    elif key == 'o':    # O        # Displays the cube in the starting position
         posX=0
         posZ=-20
         laX=0
@@ -653,13 +674,13 @@ def keyboard(bkey, x, y):
     glutPostRedisplay()
 
 def specialKey(key,x,y):
-    global X,Y,Z,rotX,rotY,rotZ,rotLx,rotLy,rotLz,lines,rotation,old_x,old_y, mousePressed,posX,posZ,laX,laZ,inc
+    global posX,posZ,laX,laZ,inc
     if laX-posX != 0:
         angulo=round(math.atan((laZ-posZ)/(laX-posX)),3)
     elif laZ>posZ:
-        angulo=1.57
+        angulo=round(math.atan((laZ-posZ)/(0.001)),3)
     else:
-        angulo=4.71
+        angulo=round(math.atan((laZ-posZ)/(0.001)),3)
         
     if key==GLUT_KEY_LEFT:
         normal=-1.57
@@ -712,7 +733,6 @@ def timer(a):
 
 glutInit()       #// Initialize GLUT
 glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH) #// Enable double buffered mode
-
 glutInitWindowSize(600, 600)   #// Set the window's initial width & height
 glutInitWindowPosition(50, 50)# // Position the window's initial top-left corner
 glutCreateWindow("aiuda")       #   // Create window with the given title
